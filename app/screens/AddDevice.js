@@ -8,11 +8,17 @@ import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";
 import { comparePassword } from "../config/helper";
 import { sendDirectSms } from "../config/smsMethods";
-
+import SmsListener from 'react-native-android-sms-listener'
 
 function AddDevice(props) {
   const users = useSelector(state => state.userDetails);
-
+  let subscription = SmsListener.addListener(message => {
+    console.info(message);
+    alert(message.originatingAddress)
+    alert(message.body)
+    alert(message.timestamp)
+  })
+  // subscription.remove()
   const validationSchema = Yup.object().shape({
     phone: Yup.string().required().label("Phone"),
   });

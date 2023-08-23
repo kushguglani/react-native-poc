@@ -6,7 +6,7 @@ let DirectSms = NativeModules.DirectSms;
 
 export const sendDirectSms = async (mobileNumber) => {
     console.log(mobileNumber);
-    const bodySMS="test message to check working or not";
+    const bodySMS="Test Message fro Kush vale-kg life-good";
     if (mobileNumber) {
         try {
             const granted = await PermissionsAndroid.request(
@@ -21,7 +21,18 @@ export const sendDirectSms = async (mobileNumber) => {
                     buttonPositive: 'OK',
                 },
             );
-            console.log({ granted })
+            const granted2 = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+                {
+                    title: 'RECEIVE SMS App Sms Permission',
+                    message:
+                        'RECEIVE SMS App needs access to your inbox ' +
+                        'so you can RECEIVE messages in background.',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                },
+            );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 DirectSms.sendDirectSms(mobileNumber, bodySMS);
                 alert('SMS sent');
