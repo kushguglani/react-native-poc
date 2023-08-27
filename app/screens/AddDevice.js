@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Image, Alert } from "react-native";
 import { useSelector, useDispatch } from 'react-redux';
 import * as Yup from "yup";
@@ -6,34 +6,71 @@ import { Link } from '@react-navigation/native';
 
 import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";
-import { comparePassword } from "../config/helper";
+import { isEmpty, isObject } from "../config/helper";
 import { sendDirectSms } from "../config/smsMethods";
 import SmsListener from 'react-native-android-sms-listener'
+import { addDevice } from "../redux/actions/action";
 
-function AddDevice(props) {
+function AddDevice({ navigation }) {
+  const [regPhone, setRegPhone] = React.useState(null);
+  const dispatch = useDispatch();
+  const [dev, setdev] = React.useState();
   const users = useSelector(state => state.userDetails);
   let subscription = SmsListener.addListener(message => {
-    console.info(message);
-    alert(message.originatingAddress)
-    alert(message.body)
-    alert(message.timestamp)
+    if (!isEmpty(message) && regPhone) {
+      const { originatingAddress, body, timestamp } = message;
+      let number = originatingAddress.substr(originatingAddress.length - 10);
+      if (number == regPhone.toString()) {
+        let op = body.replace("RUN HR", "RUN_HR");
+        op = op.replaceAll('-\n', `-`);
+        op = op.replaceAll('\n\n', `\n`);
+        op = op.replaceAll('-', `":"`);
+        op = op.replaceAll('\n', `","`);
+        op = `{"${op}"}`;
+        let jsonData = JSON.parse(op);
+        jsonData.timestamp = timestamp;
+        jsonData.number = number;
+        dispatch(addDevice(jsonData));
+        setdev(op)
+        navigation.navigate('Dashboard', { data: op })
+        // alert(`op in objec ${op}`)
+        // navigation.navigate('Dashboard')
+
+      }
+    }
   })
+  useEffect(() => {
+    if (!isEmpty(dev)) {
+      subscription.remove()
+      navigation.navigate('Dashboard')
+    }
+  }, [dev])
   // subscription.remove()
   const validationSchema = Yup.object().shape({
     phone: Yup.string().required().label("Phone"),
   });
   const addADevice = async (values, helpers) => {
     let { phone } = values;
-    let user = users.find(user => user.phone === phone);
-    console.log({ user });
-    if (phone.length != 10) {
-      return Alert.alert("Error", `Not a phone it's uuid ${phone}`)
-    } else {
-      // send message to register a device 
-      sendDirectSms(phone)
+    setRegPhone(phone)
+    console.log({phone});
+    // let user = users.find(user => user.phone === phone);
+    // console.log({ user });
+    if (phone === "5") {
+      let data = { "SUBTECH": "23/08/27,11:42", "POWER": "HEALTHY", "RY_V": "433", "YB_V": "434", "BR V": "433", "PUMP": "OFF", "RA": "0.0", "YA": "0 .0", "BA": "0.0", "MODE": "MAN", "SW": "GSM", " SIG": "99%", "RUN_HR": "0:0" }
+      data.number = Math.ceil(Math.random() * 10000000000);
+      data.timestamp = Date.now();
+      dispatch(addDevice(data));
+      console.log({data});
+      navigation.navigate('Dashboard', { data })
     }
+    else if (phone.length === 10) {
+      // send message to register a device 
 
-    // navigation.navigate('Signin')
+      sendDirectSms(phone, "status")
+
+    } else {
+      return Alert.alert("Error", `Not a phone it's uuid ${phone}`)
+    }
   }
 
   return (
@@ -58,7 +95,7 @@ function AddDevice(props) {
       </Form>
       <Link
         style={{ color: "blue", paddingTop: 10 }}
-        to={'/Signup'} >
+        to={'/Devices'} >
         My Devices
       </Link>
     </Screen>

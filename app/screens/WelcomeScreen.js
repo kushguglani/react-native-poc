@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ImageBackground, StyleSheet, View, Image, Text } from "react-native";
+import { useSelector } from 'react-redux';
 
 import Button from "../components/Button";
-import { navigate } from "../navigationRef";
 
-function WelcomeScreen({navigation}) {
+function WelcomeScreen({ navigation }) {
+  const activeUser = useSelector(state => state.activeUser);
+  useEffect(() => {
+    if (activeUser) {
+      navigation.navigate('AddDevice');
+    }
+  }, [activeUser])
   return (
     <ImageBackground
       blurRadius={10}
@@ -16,8 +22,8 @@ function WelcomeScreen({navigation}) {
         <Text style={styles.tagline}>LT-LK Dost</Text>
       </View>
       <View style={styles.buttonsContainer}>
-        <Button title="Login" onPress={()=>navigation.navigate('Signin', {name: 'Jane'})} />
-        <Button title="Register" color="secondary" onPress={()=>navigation.navigate('Signup', {name: 'Jane'})}/>
+        <Button title="Login" onPress={() => navigation.navigate('Signin', { name: 'Jane' })} />
+        <Button title="Register" color="secondary" onPress={() => navigation.navigate('Signup', { name: 'Jane' })} />
       </View>
     </ImageBackground>
   );

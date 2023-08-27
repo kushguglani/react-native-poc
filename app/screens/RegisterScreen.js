@@ -49,7 +49,7 @@ function RegisterScreen({ navigation }) {
   return (
     <Screen style={styles.container}>
       <Form
-        initialValues={{ name: "", email: "", pin: "", confirmPin: "" }}
+        initialValues={{ name: "", pin: "", confirmPin: "" }}
         onSubmit={(values, helpers) => registerUser(values, helpers)}
         validationSchema={validationSchema}
       >
@@ -58,15 +58,6 @@ function RegisterScreen({ navigation }) {
           icon="account"
           name="name"
           placeholder="Name"
-        />
-        <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          icon="email"
-          keyboardType="email-address"
-          name="email"
-          placeholder="Email"
-          textContentType="emailAddress"
         />
         <FormField
           autoCapitalize="none"

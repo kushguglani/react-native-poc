@@ -1,0 +1,25 @@
+let op = `SUBTECH-22/10/11,15:31\nSYSTEM- ON\nPOWER-HEALTHY\nRY V-449\nYB V-454\nBR_V-452\nPUMP-OFF\nRA-0.0\nYA-0.0\nBA-0.0\nMODE-MAN\nSW-GSM\nSIG-99%\nRUN HR-0.0`
+
+op = `{"` + op + `"}`;
+op = op.replaceAll('-', `":"`);
+op = op.replaceAll('\n', `","`);
+console.log(op);
+
+console.log(JSON.parse(op))
+
+{
+  BA: "0.0",
+  BR_V: "452",
+  MODE: "MAN",
+  POWER: "HEALTHY",
+  PUMP: "OFF",
+  RA: "0.0",
+  RUN HR: "0.0",
+  RY V: "449",
+  SIG: "99%",
+  SUBTECH: "22/10/11,15:31",
+  SW: "GSM",
+  SYSTEM: " ON",
+  YA: "0.0",
+  YB V: "454"
+}
