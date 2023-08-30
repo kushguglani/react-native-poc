@@ -73,7 +73,7 @@ function RegisterScreen({ navigation }) {
           autoCorrect={false}
           icon="lock"
           name="pin"
-          placeholder="Pin"
+          placeholder="Create Pin"
           secureTextEntry
           textContentType="password"
           keyboardType='numeric'

@@ -1,4 +1,4 @@
-import { ADD_USER, REMOVE_ALL_USER, ADD_DEVICE } from "../constant"
+import { ADD_USER, REMOVE_ALL_USER, ADD_DEVICE,REMOVE_DEVICE } from "../constant"
 
 const initialState = {
     userDetails: [],
@@ -23,6 +23,16 @@ export const userReducer = (state = initialState, action) => {
                 ...state,
                 devices: [...state?.devices, action.payload],
                 activeDevice: action.payload?.number
+            }
+        }
+        case REMOVE_DEVICE: {
+            console.log(action.payload);
+            const devices = state?.devices.filter(function( obj ) {
+                return obj.number !== action.payload;
+              });
+            return {
+                ...state,
+                devices
             }
         }
         case REMOVE_ALL_USER: {

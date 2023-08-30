@@ -28,6 +28,7 @@ function LoginScreen({navigation}) {
     if (!op) {
       return Alert.alert("Error", `Invalid Credentials!`)
     }
+    Alert.alert("Login successfully", "Thank You!");
     navigation.navigate('AddDevice')
   }
   return (

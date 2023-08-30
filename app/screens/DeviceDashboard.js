@@ -7,6 +7,9 @@ import {
 import { isEmpty } from "../config/helper";
 import { Switch } from 'react-native-switch';
 import { useSelector, useDispatch } from 'react-redux';
+import DropdownComponent from '../components/DropdownComponent';
+import DotMenu from '../components/DotMenu';
+import {Provider } from 'react-native-paper';
 
 function DeviceDashboard({ navigation, route }) {
     // const [isEnabled, setIsEnabled] = useState(false);
@@ -27,9 +30,10 @@ function DeviceDashboard({ navigation, route }) {
             source={require("../assets/logo.jpg")}
         >
             {!isEmpty(deviceData) ?
-                <>
+                <Provider>
                     <View style={styles.logoContainer}>
                         <Text style={styles.logoContainer.deviceName}>Device</Text>
+                        <DotMenu style={styles.logoContainer.dotMenu} navigation={navigation} />
                         {/* <Switch
                     trackColor={{ false: '#767577', true: '#81b0ff' }}
                     thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
@@ -56,17 +60,13 @@ function DeviceDashboard({ navigation, route }) {
                         </View>
                     </View>
                     <View style={styles.buttonConatiner}>
-                        <View style={styles.buttonConatiner.buttonsList}><Button title="Start" color="#37fd12" /></View>
-                        <View style={styles.buttonConatiner.buttonsList}><Button title="Stop" color="red" /></View>
-                        <View style={styles.buttonConatiner.buttonsList}><Button onPress={() =>
-                            navigation.navigate("Devices")
-                        } title="Devices List" /></View>
+                        <View style={styles.buttonConatiner.buttonsList}><Button title="Start/Stop" color="#37fd12" /></View>
                         <View style={styles.buttonConatiner.buttonsList}><Button title="Auto/Manual" /></View>
                         <View style={styles.buttonConatiner.buttonsList}><Button title="Setting" /></View>
                         <View style={styles.buttonConatiner.buttonsList}><Button title="Refresh" /></View>
 
                     </View>
-                </>
+                </Provider>
                 : <View><Text>no data</Text></View>
             }
         </ImageBackground>
@@ -76,17 +76,21 @@ function DeviceDashboard({ navigation, route }) {
 const styles = StyleSheet.create({
     background: {
         flex: 1,
+        elevation: 1,
     },
     logoContainer: {
         flex: 1,
         backgroundColor: '#ff9933',
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        alignContent: 'center',
         height: "100%",
+        width: "100",
         deviceName: {
             fontSize: 25,
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            paddingLeft: 20
         }
     },
     imageConatiner: {
@@ -95,9 +99,11 @@ const styles = StyleSheet.create({
         verticalAlign: 'middle',
         alignContent: 'center',
         height: "100%",
+        elevation: 1,
         deviceImage: {
-            marginTop: 20,
-            borderRadius: 50
+            marginTop: 30,
+            borderRadius: 50,
+            zIndex: 1
         },
         dataContainer: {
             flex: 1,
