@@ -19,7 +19,6 @@ function LoginScreen({navigation}) {
   const LoginUser = async (values, helpers) => {
     let { phone, pin } = values;
     let user = users && users.length>0 && users.find(user => user.phone === phone);
-    console.log({ user });
     if (!user) {
       return Alert.alert("Error", `Phone Number not Registered ${phone}`)
     }

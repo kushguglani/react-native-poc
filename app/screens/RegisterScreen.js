@@ -23,7 +23,6 @@ function RegisterScreen({ navigation }) {
     confirmPin: Yup.string().oneOf([Yup.ref('pin'), null], 'Pin must match')
   });
   // dispatch(removeUser())
-  console.log({users})
   const registerUser = async (values, helpers) => {
    
     delete values.confirmPin;
@@ -37,7 +36,6 @@ function RegisterScreen({ navigation }) {
         return Alert.alert("Error", "Phone Number already registered!")
       }
     }
-    console.log({values})
     dispatch(addUser(values));
     Alert.alert("Registered successfully", "Thank You!");
     helpers.resetForm({

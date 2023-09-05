@@ -17,8 +17,6 @@ export const userReducer = (state = initialState, action) => {
         }
         case ADD_DEVICE: {
             alert(action.payload?.number)
-            console.log("payload", action.payload)
-            console.log("devices", state.devices)
             return {
                 ...state,
                 devices: [...state?.devices, action.payload],
@@ -26,7 +24,6 @@ export const userReducer = (state = initialState, action) => {
             }
         }
         case REMOVE_DEVICE: {
-            console.log(action.payload);
             const devices = state?.devices.filter(function( obj ) {
                 return obj.number !== action.payload;
               });

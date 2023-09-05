@@ -13,12 +13,10 @@ const DeviceList = ({ navigation }) => {
   const [deleteId, setDeletedId] = useState('');
   const dispatch = useDispatch();
   const deleteDevice = () => {
-    console.log({deleteId});
     dispatch(removeDevice(deleteId))
     setVisiblePrompt(false)
   }
   const onDeleteDevice = (num) => {
-    console.log({num});
     setDeletedId(num)
     setVisiblePrompt(true)
   }

@@ -4,9 +4,8 @@ import { PermissionsAndroid } from 'react-native';
 
 let DirectSms = NativeModules.DirectSms;
 
-export const sendDirectSms = async (mobileNumber,msz) => {
+export const sendDirectSms = async (mobileNumber,bodySMS) => {
     console.log(mobileNumber);
-    const bodySMS=msz;
     if (mobileNumber) {
         try {
             const granted = await PermissionsAndroid.request(

@@ -9,7 +9,9 @@ import { Switch } from 'react-native-switch';
 import { useSelector, useDispatch } from 'react-redux';
 import DropdownComponent from '../components/DropdownComponent';
 import DotMenu from '../components/DotMenu';
-import {Provider } from 'react-native-paper';
+import { Provider } from 'react-native-paper';
+import { sendDirectSms } from "../config/smsMethods";
+import SmsListener from 'react-native-android-sms-listener'
 
 function DeviceDashboard({ navigation, route }) {
     // const [isEnabled, setIsEnabled] = useState(false);
@@ -23,6 +25,66 @@ function DeviceDashboard({ navigation, route }) {
     //     deviceData = devices.find(device => device.number === activeDevice);
     // }
     // alert(`activeDevice ${activeDevice}`)
+    const startStopMotor = () => {
+        deviceData?.PUMP === "OFF" ?
+            sendDirectSms(deviceData?.number, "start") :
+            sendDirectSms(deviceData?.number, "stop");
+    }
+
+    let subscription = SmsListener.addListener(message => {
+        if (!isEmpty(message) && regPhone && message?.timestamp) {
+            try {
+                const { originatingAddress, body, timestamp } = message;
+                let number = originatingAddress.substr(originatingAddress.length - 10);
+                alert("number " + number)
+                alert("originatingAddress" + originatingAddress)
+                alert(body)
+                alert("timestamp" + timestamp)
+                alert(body.includes("RY_V"))
+
+                if (!body.includes("RY_V")) {
+                    setStart(false)
+                    clearInterval(current)
+                    setSeconds(0)
+                    Alert.alert("Error", `Nunber not registered ${number}`);
+                    subscription.remove()
+                }
+                else if (number == regPhone.toString()) {
+                    // setStart(true)
+                    // startTimer()
+                    let op = body.replace("RUN HR", "RUN_HR");
+                    op = op.replaceAll('-\n', `-`);
+                    op = op.replaceAll('\n\n', `\n`);
+                    op = op.replaceAll('-', `":"`);
+                    op = op.replaceAll('\n', `","`);
+                    op = `{"${op}"}`;
+                    try {
+                        op = JSON.parse(op);
+                    } catch (e) {
+                        alert(e.toString())
+                        return console.error(e); // error in the above string (in this case, yes)!
+                    }
+                    jsonData.timestamp = timestamp;
+                    jsonData.number = number;
+                    dispatch(addDevice(jsonData));
+                    setdev(jsonData)
+                    setStart(false)
+                    clearInterval(current)
+                    setSeconds(0)
+                    navigation.navigate('Dashboard', { data: jsonData })
+                    // alert(`op in objec ${op}`)
+                    // navigation.navigate('Dashboard')
+
+                } else {
+                    subscription.remove()
+
+                }
+            }
+            catch (e) {
+                alert(e.toString())
+            }
+        }
+    })
     return (
         <ImageBackground
             blurRadius={10}
@@ -60,7 +122,7 @@ function DeviceDashboard({ navigation, route }) {
                         </View>
                     </View>
                     <View style={styles.buttonConatiner}>
-                        <View style={styles.buttonConatiner.buttonsList}><Button title="Start/Stop" color="#37fd12" /></View>
+                        <View style={styles.buttonConatiner.buttonsList}><Button onPress={startStopMotor} title={deviceData?.PUMP === "OFF" ? "Start" : "Stop"} color="#37fd12" /></View>
                         <View style={styles.buttonConatiner.buttonsList}><Button title="Auto/Manual" /></View>
                         <View style={styles.buttonConatiner.buttonsList}><Button title="Setting" /></View>
                         <View style={styles.buttonConatiner.buttonsList}><Button title="Refresh" /></View>
@@ -133,9 +195,7 @@ const styles = StyleSheet.create({
             width: "40%",
             flexDirection: "column",
             justifyContent: 'space-evenly',
-            height: '25%',
-            // padding:10,
-            // margin:10
+            height: '35%',
         }
     }
 });
